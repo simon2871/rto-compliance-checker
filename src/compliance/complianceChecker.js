@@ -68,6 +68,7 @@ class ComplianceChecker {
         status: this.determineStatus(finalScore),
         violations: combinedResults.violations,
         required_elements: combinedResults.required_elements,
+        passed_rules: combinedResults.passed_rules,
         recommendations,
         content_analysis: {
           word_count: content.text ? content.text.split(/\s+/).length : 0,
@@ -89,6 +90,7 @@ class ComplianceChecker {
     const text = content.text || '';
     const violations = [];
     const requiredElements = [];
+    const passedRules = [];
 
     // Check critical violations
     for (const rule of this.rules.rules.critical_violations) {
@@ -104,6 +106,17 @@ class ComplianceChecker {
           recommendation: this.getRuleRecommendation(rule),
           asqa_reference: rule.asqa_reference
         })));
+      } else {
+        // Rule passed - no violations found
+        passedRules.push({
+          id: rule.id,
+          category: rule.category,
+          type: 'critical_violation',
+          description: rule.description,
+          status: 'passed',
+          message: `No forbidden ${rule.name.replace('_', ' ')} found`,
+          asqa_reference: rule.asqa_reference
+        });
       }
     }
 
@@ -121,6 +134,17 @@ class ComplianceChecker {
           recommendation: rule.correction,
           asqa_reference: rule.asqa_reference
         })));
+      } else {
+        // Rule passed - correct terminology used
+        passedRules.push({
+          id: rule.id,
+          category: rule.category,
+          type: 'required_terminology',
+          description: rule.description,
+          status: 'passed',
+          message: `Correct terminology used - no ${rule.name.replace('_', ' ')} violations found`,
+          asqa_reference: rule.asqa_reference
+        });
       }
     }
 
@@ -216,12 +240,25 @@ class ComplianceChecker {
           location,
           asqa_reference: rule.asqa_reference
         });
+
+        // Also add to passed rules
+        passedRules.push({
+          id: rule.id,
+          category: rule.category,
+          type: 'web_requirement',
+          description: rule.description,
+          status: 'passed',
+          message: `Required web element found: ${rule.description}`,
+          location,
+          asqa_reference: rule.asqa_reference
+        });
       }
     }
 
     return {
       violations,
       required_elements: requiredElements,
+      passed_rules: passedRules,
       method: 'rule_based'
     };
   }
@@ -298,7 +335,8 @@ Be thorough but practical. Focus on actual violations that would impact ASQA com
   combineResults(basicResults, aiResults) {
     const combined = {
       violations: [...(basicResults.violations || [])],
-      required_elements: basicResults.required_elements || []
+      required_elements: basicResults.required_elements || [],
+      passed_rules: [...(basicResults.passed_rules || [])]
     };
 
     // Add AI violations if available

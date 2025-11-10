@@ -1,2 +1,439 @@
-[
+{
+  "version": "1.0",
+  "last_updated": "2025-11-11T00:00:00Z",
+  "description": "Web compliance rules for RTO websites and online learning platforms",
+  "rules": {
+    "website_structure": [
+      {
+        "id": "ws_001",
+        "name": "rto_identification_header",
+        "category": "header_information",
+        "severity": "critical",
+        "description": "RTO number must be visible in header or first mention",
+        "pattern": "\\(RTO\\s*\\d{5}\\)",
+        "required": true,
+        "location": "header_or_first_mention",
+        "examples": {
+          "compliant": "Edmund Barton College (RTO 90768) - Leading Vocational Education",
+          "non_compliant": "Edmund Barton College - Leading Vocational Education"
+        },
+        "asqa_reference": "Standard 7.1 - Provider information"
+      },
+      {
+        "id": "ws_002",
+        "name": "navigation_clarity",
+        "category": "website_navigation",
+        "severity": "warning",
+        "description": "Clear navigation menu with essential sections",
+        "required_sections": ["Courses", "About Us", "Contact", "Student Support"],
+        "pattern": "(nav|menu|navigation)",
+        "checks": [
+          "Courses link visible",
+          "Contact information accessible",
+          "About Us section present",
+          "Student Support available"
+        ],
+        "asqa_reference": "Standard 7.1 - Accessibility of information"
+      },
+      {
+        "id": "ws_003",
+        "name": "search_functionality",
+        "category": "website_functionality",
+        "severity": "moderate",
+        "description": "Search functionality for course information",
+        "pattern": "(search|find courses|course finder)",
+        "required": false,
+        "best_practice": true,
+        "asqa_reference": "Best practice - User experience"
+      }
+    ],
+    "course_information": [
+      {
+        "id": "ws_004",
+        "name": "course_code_visibility",
+        "category": "course_details",
+        "severity": "warning",
+        "description": "Nationally recognised training codes must be visible",
+        "pattern": "[A-Z]{3}\\d{3}",
+        "required": true,
+        "location": "course_description",
+        "examples": {
+          "compliant": "Certificate III in Business (BSB30120)",
+          "non_compliant": "Certificate III in Business"
+        },
+        "asqa_reference": "Standard 1.1 - Training identification"
+      },
+      {
+        "id": "ws_005",
+        "name": "aqf_level_display",
+        "category": "course_details",
+        "severity": "warning",
+        "description": "AQF qualification level must be clearly stated",
+        "pattern": "(Certificate I|Certificate II|Certificate III|Certificate IV|Diploma|Advanced Diploma|Associate Degree|Bachelor Degree|Graduate Certificate|Graduate Diploma|Master Degree|Doctoral Degree)",
+        "required": true,
+        "asqa_reference": "AQF specifications - Qualification levels"
+      },
+      {
+        "id": "ws_006",
+        "name": "duration_information",
+        "category": "course_details",
+        "severity": "moderate",
+        "description": "Course duration with realistic timeframes",
+        "pattern": "(duration|time|weeks|months|years|hours)",
+        "forbidden_patterns": [
+          "exactly",
+          "guaranteed",
+          "precisely"
+        ],
+        "allowed_patterns": [
+          "approximately",
+          "typical",
+          "average",
+          "up to"
+        ],
+        "asqa_reference": "Standard 4.1 - Duration claims"
+      },
+      {
+        "id": "ws_007",
+        "name": "delivery_mode_clarity",
+        "category": "course_details",
+        "severity": "moderate",
+        "description": "Clear delivery mode information",
+        "pattern": "(classroom|online|blended|flexible|workplace|distance)",
+        "required": true,
+        "delivery_modes": [
+          "Face-to-face classroom",
+          "Online/virtual classroom",
+          "Blended learning",
+          "Flexible delivery",
+          "Workplace-based"
+        ],
+        "asqa_reference": "Standard 1.4 - Training delivery modes"
+      },
+      {
+        "id": "ws_008",
+        "name": "assessment_methods",
+        "category": "course_details",
+        "severity": "moderate",
+        "description": "Assessment methods must be disclosed",
+        "pattern": "(assessment|assessment methods|how you'll be assessed)",
+        "required": true,
+        "methods": [
+          "Knowledge questions",
+          "Practical demonstration",
+          "Workplace projects",
+          "Portfolio evidence",
+          "Third-party reports"
+        ],
+        "asqa_reference": "Standard 1.8 - Assessment system"
+      }
+    ],
+    "enrollment_information": [
+      {
+        "id": "ws_009",
+        "name": "entry_requirements",
+        "category": "enrollment",
+        "severity": "moderate",
+        "description": "Clear entry requirements and prerequisites",
+        "pattern": "(entry requirements|prerequisites|what you need|eligibility)",
+        "required": true,
+        "asqa_reference": "Standard 1.6 - Admission requirements"
+      },
+      {
+        "id": "ws_010",
+        "name": "enrollment_process",
+        "category": "enrollment",
+        "severity": "moderate",
+        "description": "Clear enrollment steps and timeline",
+        "pattern": "(enrol|enrollment|how to enrol|enrolment steps)",
+        "required": true,
+        "steps_required": [
+          "Application process",
+          "Pre-enrolment interview",
+          "LLN assessment",
+          "Documentation required"
+        ],
+        "asqa_reference": "Standard 6.1 - Pre-enrolment engagement"
+      },
+      {
+        "id": "ws_011",
+        "name": "fee_disclosure_comprehensive",
+        "category": "fees_pricing",
+        "severity": "critical",
+        "description": "Comprehensive fee disclosure with breakdown",
+        "pattern": "(fees|cost|price|tuition|investment)",
+        "required_elements": [
+          "Total course cost",
+          "Payment plan options",
+          "Additional costs (materials)",
+          "Refund policy reference"
+        ],
+        "forbidden_claims": [
+          "guaranteed earnings",
+          "specific salary figures"
+        ],
+        "asqa_reference": "Standard 3.2 - Fees and charges transparency"
+      },
+      {
+        "id": "ws_012",
+        "name": "refund_policy_accessibility",
+        "category": "fees_pricing",
+        "severity": "critical",
+        "description": "Refund policy must be accessible before enrollment",
+        "pattern": "(refund policy|refund information|cancellation|withdrawal)",
+        "required": true,
+        "location": "pre-enrollment_visible",
+        "asqa_reference": "Standard 3.2 - Refund policy"
+      }
+    ],
+    "student_support": [
+      {
+        "id": "ws_013",
+        "name": "support_services_visible",
+        "category": "student_support",
+        "severity": "moderate",
+        "description": "Student support services must be clearly visible",
+        "pattern": "(support|help|student services|assistance)",
+        "required_services": [
+          "Academic support",
+          "Technical support",
+          "Career guidance",
+          "Counseling services"
+        ],
+        "contact_methods": [
+          "Phone number",
+          "Email address",
+          "Contact form"
+        ],
+        "asqa_reference": "Standard 5.1 - Learner support"
+      },
+      {
+        "id": "ws_014",
+        "name": "technical_requirements",
+        "category": "online_learning",
+        "severity": "moderate",
+        "description": "Technical requirements for online learning",
+        "pattern": "(technical requirements|system requirements|what you'll need|equipment)",
+        "required_for_online": true,
+        "requirements": [
+          "Internet speed",
+          "Device specifications",
+          "Software requirements",
+          "Webcam/microphone for virtual classes"
+        ],
+        "asqa_reference": "Standard 1.7 - Learning resources"
+      },
+      {
+        "id": "ws_015",
+        "name": "digital_literacy_support",
+        "category": "online_learning",
+        "severity": "moderate",
+        "description": "Digital literacy support information",
+        "pattern": "(digital literacy|computer skills|technology help|online learning support)",
+        "best_practice": true,
+        "asqa_reference": "Standard 5.1 - Support for digital learning"
+      }
+    ],
+    "accessibility_compliance": [
+      {
+        "id": "ws_016",
+        "name": "wcag_compliance",
+        "category": "accessibility",
+        "severity": "moderate",
+        "description": "Website accessibility standards",
+        "wcag_level": "AA",
+        "checks": [
+          "Alt text for images",
+          "Keyboard navigation",
+          "Color contrast ratios",
+          "Screen reader compatibility",
+          "Resizable text"
+        ],
+        "asqa_reference": "Disability Discrimination Act 1992"
+      },
+      {
+        "id": "ws_017",
+        "name": "mobile_responsiveness",
+        "category": "accessibility",
+        "severity": "moderate",
+        "description": "Mobile-friendly website design",
+        "pattern": "(mobile|responsive|app|tablet)",
+        "checks": [
+          "Responsive design",
+          "Readable text on mobile",
+          "Functional navigation",
+          "Accessible forms"
+        ],
+        "asqa_reference": "Best practice - Mobile accessibility"
+      },
+      {
+        "id": "ws_018",
+        "name": "language_accessibility",
+        "category": "accessibility",
+        "severity": "moderate",
+        "description": "Language accessibility options",
+        "pattern": "(language|translation|interpreting|multilingual)",
+        "considerations": [
+          "Plain English options",
+          "Translation services",
+          "Interpreter availability",
+          "Cultural appropriateness"
+        ],
+        "asqa_reference": "Standard 2.2 - Language, literacy and numeracy"
+      }
+    ],
+    "data_privacy_security": [
+      {
+        "id": "ws_019",
+        "name": "privacy_policy_link",
+        "category": "privacy",
+        "severity": "critical",
+        "description": "Privacy policy must be accessible",
+        "pattern": "(privacy policy|privacy statement|data protection)",
+        "required": true,
+        "location": "footer_or_navigation",
+        "content_requirements": [
+          "Data collection purposes",
+          "Information storage",
+          "Third-party sharing",
+          "User rights"
+        ],
+        "asqa_reference": "Privacy Act 1988"
+      },
+      {
+        "id": "ws_020",
+        "name": "cookie_policy",
+        "category": "privacy",
+        "severity": "moderate",
+        "description": "Cookie usage disclosure",
+        "pattern": "(cookie|cookies|tracking)",
+        "required": true,
+        "asqa_reference": "Privacy Act 1988 - Online privacy"
+      },
+      {
+        "id": "ws_021",
+        "name": "data_security_measures",
+        "category": "security",
+        "severity": "critical",
+        "description": "Student data security information",
+        "pattern": "(security|secure|encryption|data protection)",
+        "required_elements": [
+          "HTTPS encryption",
+          "Data storage security",
+          "Access controls",
+          "Breach notification"
+        ],
+        "asqa_reference": "Notifiable Data Breaches Scheme"
+      }
+    ],
+    "online_learning_standards": [
+      {
+        "id": "ws_022",
+        "name": "virtual_classroom_standards",
+        "category": "online_delivery",
+        "severity": "moderate",
+        "description": "Virtual classroom delivery standards",
+        "platforms": ["Zoom", "Teams", "WebEx", "proprietary"],
+        "requirements": [
+          "Instructor qualifications visible",
+          "Class size limits",
+          "Interaction requirements",
+          "Recording policies",
+          "Attendance tracking"
+        ],
+        "asqa_reference": "Standard 1.4 - Online delivery"
+      },
+      {
+        "id": "ws_023",
+        "name": "online_assessment_integrity",
+        "category": "online_assessment",
+        "severity": "critical",
+        "description": "Online assessment security and integrity",
+        "pattern": "(online assessment|digital assessment|assessment integrity)",
+        "requirements": [
+          "Student verification",
+          "Plagiarism detection",
+          "Secure assessment platform",
+          "Supervision where required",
+          "Backup assessment methods"
+        ],
+        "asqa_reference": "Standard 1.8 - Assessment integrity"
+      },
+      {
+        "id": "ws_024",
+        "name": "learning_management_system",
+        "category": "technology",
+        "severity": "moderate",
+        "description": "LMS functionality and access",
+        "pattern": "(LMS|learning management system|student portal|online classroom)",
+        "required_features": [
+          "Course materials access",
+          "Submission system",
+          "Grades/progress tracking",
+          "Communication tools",
+          "Technical support"
+        ],
+        "asqa_reference": "Standard 1.7 - Learning resources"
+      }
+    ],
+    "compliance_monitoring": [
+      {
+        "id": "ws_025",
+        "name": "version_control_dates",
+        "category": "content_management",
+        "severity": "moderate",
+        "description": "Content versioning and update dates",
+        "pattern": "(last updated|reviewed|version|modified)",
+        "best_practice": true,
+        "asqa_reference": "Standard 2.3 - Validation of learning strategies"
+      },
+      {
+        "id": "ws_026",
+        "name": "feedback_mechanisms",
+        "category": "quality_improvement",
+        "severity": "moderate",
+        "description": "Student feedback and complaint mechanisms",
+        "pattern": "(feedback|complaints|suggestions|compliments)",
+        "required": true,
+        "mechanisms": [
+          "Feedback form",
+          "Complaints process",
+          "Response timeframes",
+          "Review procedures"
+        ],
+        "asqa_reference": "Standard 6.2 - Complaints and appeals"
+      }
+    ]
+  },
+  "compliance_thresholds": {
+    "website_structure": {
+      "critical_required": 1,
+      "moderate_required": 2,
+      "warning_threshold": 80
+    },
+    "course_information": {
+      "critical_required": 0,
+      "moderate_required": 3,
+      "warning_threshold": 85
+    },
+    "student_support": {
+      "critical_required": 0,
+      "moderate_required": 2,
+      "warning_threshold": 75
+    },
+    "data_privacy": {
+      "critical_required": 2,
+      "moderate_required": 1,
+      "warning_threshold": 90
+    }
+  },
+  "scoring_weights": {
+    "website_structure": 20,
+    "course_information": 25,
+    "enrollment_information": 20,
+    "student_support": 15,
+    "accessibility": 10,
+    "data_privacy_security": 10
+  }
+}
 ]
