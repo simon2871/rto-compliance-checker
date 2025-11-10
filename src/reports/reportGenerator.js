@@ -1,0 +1,605 @@
+const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+const fs = require('fs').promises;
+const path = require('path');
+
+class ReportGenerator {
+  constructor() {
+    this.outputDir = path.join(__dirname, '../../data/scans');
+    this.ensureOutputDir();
+  }
+
+  async ensureOutputDir() {
+    try {
+      await fs.mkdir(this.outputDir, { recursive: true });
+    } catch (error) {
+      console.warn('Failed to create output directory:', error.message);
+    }
+  }
+
+  async generatePDFReport(complianceResult) {
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([595, 842]); // A4 size
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      const { width, height } = page.getSize();
+      let currentY = height - 50;
+
+      // Title
+      page.drawText('RTO Compliance Report', {
+        x: 50,
+        y: currentY,
+        size: 24,
+        font: boldFont,
+        color: rgb(0, 0, 0.5)
+      });
+
+      currentY -= 40;
+
+      // Basic information
+      page.drawText(`URL: ${complianceResult.url}`, {
+        x: 50,
+        y: currentY,
+        size: 12,
+        font,
+        color: rgb(0, 0, 0)
+      });
+
+      currentY -= 20;
+      page.drawText(`Scan Date: ${new Date(complianceResult.timestamp).toLocaleString()}`, {
+        x: 50,
+        y: currentY,
+        size: 12,
+        font,
+        color: rgb(0, 0, 0)
+      });
+
+      currentY -= 20;
+      page.drawText(`Compliance Score: ${complianceResult.compliance_score}%`, {
+        x: 50,
+        y: currentY,
+        size: 16,
+        font: boldFont,
+        color: this.getScoreColor(complianceResult.compliance_score)
+      });
+
+      currentY -= 30;
+
+      // Status
+      page.drawText(`Status: ${complianceResult.status}`, {
+        x: 50,
+        y: currentY,
+        size: 14,
+        font: boldFont,
+        color: this.getStatusColor(complianceResult.status)
+      });
+
+      currentY -= 40;
+
+      // Violations section
+      if (complianceResult.violations && complianceResult.violations.length > 0) {
+        page.drawText('Violations Found:', {
+          x: 50,
+          y: currentY,
+          size: 18,
+          font: boldFont,
+          color: rgb(0.8, 0, 0)
+        });
+
+        currentY -= 30;
+
+        for (const violation of complianceResult.violations) {
+          if (currentY < 100) {
+            // Add new page if running out of space
+            const newPage = pdfDoc.addPage([595, 842]);
+            currentY = height - 50;
+          }
+
+          page.drawText(`• ${violation.description}`, {
+            x: 70,
+            y: currentY,
+            size: 11,
+            font,
+            color: rgb(0, 0, 0)
+          });
+
+          currentY -= 15;
+
+          if (violation.text_found) {
+            page.drawText(`  Found: "${violation.text_found}"`, {
+              x: 90,
+              y: currentY,
+              size: 10,
+              font: font,
+              color: rgb(0.3, 0.3, 0.3)
+            });
+            currentY -= 15;
+          }
+
+          if (violation.recommendation) {
+            page.drawText(`  Recommendation: ${violation.recommendation}`, {
+              x: 90,
+              y: currentY,
+              size: 10,
+              font: font,
+              color: rgb(0, 0, 0.5)
+            });
+            currentY -= 20;
+          }
+        }
+      } else {
+        page.drawText('No violations found - Excellent compliance!', {
+          x: 50,
+          y: currentY,
+          size: 14,
+          font: boldFont,
+          color: rgb(0, 0.5, 0)
+        });
+        currentY -= 30;
+      }
+
+      // Recommendations section
+      if (complianceResult.recommendations && complianceResult.recommendations.length > 0) {
+        currentY -= 20;
+
+        if (currentY < 150) {
+          const newPage = pdfDoc.addPage([595, 842]);
+          currentY = height - 50;
+        }
+
+        page.drawText('Recommendations:', {
+          x: 50,
+          y: currentY,
+          size: 16,
+          font: boldFont,
+          color: rgb(0, 0, 0.8)
+        });
+
+        currentY -= 25;
+
+        for (const recommendation of complianceResult.recommendations) {
+          if (currentY < 100) {
+            const newPage = pdfDoc.addPage([595, 842]);
+            currentY = height - 50;
+          }
+
+          const lines = this.wrapText(recommendation, 70, font, 11, width - 100);
+          for (const line of lines) {
+            page.drawText(line, {
+              x: 70,
+              y: currentY,
+              size: 11,
+              font,
+              color: rgb(0, 0, 0)
+            });
+            currentY -= 15;
+          }
+          currentY -= 10;
+        }
+      }
+
+      // Footer
+      const footerY = 30;
+      page.drawText('Generated by RTO Compliance Checker', {
+        x: 50,
+        y: footerY,
+        size: 10,
+        font,
+        color: rgb(0.5, 0.5, 0.5)
+      });
+
+      page.drawText(`Report ID: ${complianceResult.scan_id}`, {
+        x: 50,
+        y: footerY - 15,
+        size: 10,
+        font,
+        color: rgb(0.5, 0.5, 0.5)
+      });
+
+      // Save PDF
+      const pdfBytes = await pdfDoc.save();
+      const filename = `compliance-report-${complianceResult.scan_id}.pdf`;
+      const filepath = path.join(this.outputDir, filename);
+
+      await fs.writeFile(filepath, pdfBytes);
+
+      return {
+        filename,
+        filepath,
+        size: pdfBytes.length,
+        format: 'PDF'
+      };
+    } catch (error) {
+      throw new Error(`PDF generation failed: ${error.message}`);
+    }
+  }
+
+  async generateHTMLReport(complianceResult) {
+    try {
+      const html = this.buildHTMLTemplate(complianceResult);
+      const filename = `compliance-report-${complianceResult.scan_id}.html`;
+      const filepath = path.join(this.outputDir, filename);
+
+      await fs.writeFile(filepath, html);
+
+      return {
+        filename,
+        filepath,
+        size: html.length,
+        format: 'HTML'
+      };
+    } catch (error) {
+      throw new Error(`HTML generation failed: ${error.message}`);
+    }
+  }
+
+  buildHTMLTemplate(result) {
+    const violationsHTML = result.violations.map(violation => `
+      <div class="violation ${violation.severity}">
+        <h4>${violation.description}</h4>
+        <p><strong>Severity:</strong> <span class="severity-${violation.severity}">${violation.severity.toUpperCase()}</span></p>
+        ${violation.text_found ? `<p><strong>Found:</strong> "${violation.text_found}"</p>` : ''}
+        <p><strong>Location:</strong> ${violation.location}</p>
+        <p><strong>Recommendation:</strong> ${violation.recommendation}</p>
+        ${violation.asqa_reference ? `<p><strong>ASQA Reference:</strong> ${violation.asqa_reference}</p>` : ''}
+      </div>
+    `).join('');
+
+    const recommendationsHTML = result.recommendations.map(rec => `
+      <li>${rec}</li>
+    `).join('');
+
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTO Compliance Report - ${result.url}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header .url {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        .summary {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .score-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .score-circle {
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            line-height: 150px;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto;
+        }
+        .status {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .section {
+            background: white;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .section-header h2 {
+            margin: 0;
+            color: #495057;
+        }
+        .section-content {
+            padding: 30px;
+        }
+        .violation {
+            border-left: 4px solid #dc3545;
+            background: #f8d7da;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .violation.warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        .violation.moderate {
+            border-left-color: #fd7e14;
+            background: #ffe8d1;
+        }
+        .violation h4 {
+            margin-top: 0;
+            color: #721c24;
+        }
+        .violation.warning h4 {
+            color: #856404;
+        }
+        .violation.moderate h4 {
+            color: #833600;
+        }
+        .severity-critical {
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .severity-moderate {
+            background: #fd7e14;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .severity-warning {
+            background: #ffc107;
+            color: #212529;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        .recommendations {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .recommendations ul {
+            margin-bottom: 0;
+        }
+        .recommendations li {
+            margin-bottom: 10px;
+        }
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        .PASS { color: #28a745; }
+        .PASS_WITH_NOTES { color: #17a2b8; }
+        .NEEDS_REVIEW { color: #ffc107; }
+        .ACTION_REQUIRED { color: #fd7e14; }
+        .FAIL { color: #dc3545; }
+        .score-excellent { background: #28a745; }
+        .score-good { background: #17a2b8; }
+        .score-acceptable { background: #ffc107; color: #212529; }
+        .score-poor { background: #dc3545; }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 2em; }
+            .section-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RTO Compliance Report</h1>
+        <div class="url">${result.url}</div>
+        <div>Generated on ${new Date(result.timestamp).toLocaleString()}</div>
+    </div>
+
+    <div class="summary">
+        <div class="score-display">
+            <div class="score-circle ${this.getScoreClass(result.compliance_score)}">
+                ${result.compliance_score}%
+            </div>
+        </div>
+        <div class="status ${result.status}">
+            Status: ${result.status.replace(/_/g, ' ')}
+        </div>
+        <div style="text-align: center; color: #6c757d;">
+            Scan ID: ${result.scan_id}
+        </div>
+    </div>
+
+    ${result.violations && result.violations.length > 0 ? `
+    <div class="section">
+        <div class="section-header">
+            <h2>Violations Found (${result.violations.length})</h2>
+        </div>
+        <div class="section-content">
+            ${violationsHTML}
+        </div>
+    </div>
+    ` : `
+    <div class="section">
+        <div class="section-content" style="text-align: center; padding: 40px;">
+            <h3 style="color: #28a745;">🎉 No violations found!</h3>
+            <p>Excellent compliance with ASQA/AQF standards.</p>
+        </div>
+    </div>
+    `}
+
+    ${result.recommendations && result.recommendations.length > 0 ? `
+    <div class="section">
+        <div class="section-header">
+            <h2>Recommendations for Improvement</h2>
+        </div>
+        <div class="section-content">
+            <div class="recommendations">
+                <ul>
+                    ${recommendationsHTML}
+                </ul>
+            </div>
+        </div>
+    </div>
+    ` : ''}
+
+    ${result.ai_analysis ? `
+    <div class="section">
+        <div class="section-header">
+            <h2>AI Analysis Details</h2>
+        </div>
+        <div class="section-content">
+            <p><strong>Model Used:</strong> ${result.ai_analysis.model_used}</p>
+            <p><strong>Confidence:</strong> ${Math.round(result.ai_analysis.confidence * 100)}%</p>
+            <p><strong>Processing Time:</strong> ${result.ai_analysis.processing_time}ms</p>
+        </div>
+    </div>
+    ` : ''}
+
+    <div class="footer">
+        <p>Generated by RTO Compliance Checker | Report ID: ${result.scan_id}</p>
+        <p>This report is based on ASQA Standards for RTOs 2025 and AQF requirements</p>
+    </div>
+</body>
+</html>`;
+  }
+
+  getScoreClass(score) {
+    if (score >= 95) return 'score-excellent';
+    if (score >= 85) return 'score-good';
+    if (score >= 75) return 'score-acceptable';
+    return 'score-poor';
+  }
+
+  getScoreColor(score) {
+    if (score >= 95) return rgb(0.2, 0.6, 0.2);
+    if (score >= 85) return rgb(0, 0.4, 0.8);
+    if (score >= 75) return rgb(0.8, 0.6, 0);
+    return rgb(0.8, 0, 0);
+  }
+
+  getStatusColor(status) {
+    const colors = {
+      'PASS': rgb(0.2, 0.6, 0.2),
+      'PASS_WITH_NOTES': rgb(0, 0.4, 0.8),
+      'NEEDS_REVIEW': rgb(0.8, 0.6, 0),
+      'ACTION_REQUIRED': rgb(0.8, 0.4, 0),
+      'FAIL': rgb(0.8, 0, 0)
+    };
+    return colors[status] || rgb(0, 0, 0);
+  }
+
+  wrapText(text, x, font, fontSize, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      const testLine = currentLine + (currentLine ? ' ' : '') + word;
+      const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+
+      if (testWidth <= maxWidth - x) {
+        currentLine = testLine;
+      } else {
+        if (currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          lines.push(word);
+        }
+      }
+    }
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    return lines;
+  }
+
+  async generateJSONReport(complianceResult) {
+    try {
+      const filename = `compliance-report-${complianceResult.scan_id}.json`;
+      const filepath = path.join(this.outputDir, filename);
+
+      const jsonContent = JSON.stringify(complianceResult, null, 2);
+      await fs.writeFile(filepath, jsonContent);
+
+      return {
+        filename,
+        filepath,
+        size: jsonContent.length,
+        format: 'JSON'
+      };
+    } catch (error) {
+      throw new Error(`JSON generation failed: ${error.message}`);
+    }
+  }
+
+  async generateAllFormats(complianceResult) {
+    const results = {};
+
+    try {
+      results.pdf = await this.generatePDFReport(complianceResult);
+      results.html = await this.generateHTMLReport(complianceResult);
+      results.json = await this.generateJSONReport(complianceResult);
+
+      return results;
+    } catch (error) {
+      throw new Error(`Report generation failed: ${error.message}`);
+    }
+  }
+
+  async generateSummaryReport(results) {
+    const timestamp = new Date().toISOString();
+    const summaryId = `summary_${Date.now()}`;
+
+    const summary = {
+      summary_id: summaryId,
+      timestamp,
+      summary: results.summary,
+      pages: results.pages,
+      recommendations: results.recommendations
+    };
+
+    const filename = `summary-report-${summaryId}.json`;
+    const filepath = path.join(this.outputDir, filename);
+
+    await fs.writeFile(filepath, JSON.stringify(summary, null, 2));
+
+    return {
+      filename,
+      filepath,
+      size: JSON.stringify(summary, null, 2).length,
+      format: 'JSON'
+    };
+  }
+}
+
+module.exports = ReportGenerator;

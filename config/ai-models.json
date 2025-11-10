@@ -1,0 +1,140 @@
+{
+  "model_registry": "config/model-registry.json",
+  "models": {
+    "gpt4_turbo": {
+      "provider": "openai",
+      "model_ref": "openai:stable",
+      "model_id": "gpt-4-turbo",
+      "api_key_env": "OPENAI_API_KEY",
+      "enabled": true,
+      "max_tokens": 4096,
+      "temperature": 0.7,
+      "cost_per_1k_tokens": {
+        "input": 0.01,
+        "output": 0.03
+      }
+    },
+    "claude_sonnet": {
+      "provider": "claude",
+      "model_ref": "claude:latest",
+      "model_id": "claude-sonnet-4-5-20250929",
+      "api_key_env": "ANTHROPIC_API_KEY",
+      "enabled": true,
+      "max_tokens": 4096,
+      "temperature": 0.7,
+      "cost_per_1k_tokens": {
+        "input": 0.003,
+        "output": 0.015
+      }
+    },
+    "deepseek_r1": {
+      "provider": "deepseek",
+      "model_ref": "deepseek:reasoner",
+      "model_id": "deepseek-reasoner",
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "enabled": true,
+      "max_tokens": 4096,
+      "temperature": 0.7,
+      "cost_per_1k_tokens": {
+        "input": 0.002,
+        "output": 0.008
+      }
+    },
+    "perplexity_research": {
+      "provider": "perplexity",
+      "model_ref": "perplexity:research",
+      "model_id": "sonar-pro",
+      "api_key_env": "PERPLEXITYAI_API_KEY",
+      "enabled": true,
+      "max_tokens": 4096,
+      "temperature": 0.7,
+      "cost_per_1k_tokens": {
+        "input": 0.003,
+        "output": 0.015
+      }
+    },
+    "dalle3": {
+      "provider": "openai",
+      "model_ref": "dalle:standard",
+      "model_id": "dall-e-3",
+      "api_key_env": "OPENAI_API_KEY",
+      "enabled": true,
+      "size": "1792x1024",
+      "quality": "standard",
+      "cost_per_image": 0.08
+    },
+    "glm46": {
+      "provider": "glm",
+      "model_ref": "glm:latest",
+      "model_id": "glm-4.6",
+      "api_key_env": "ZHIPUAI_API_KEY",
+      "enabled": true,
+      "max_tokens": 8000,
+      "temperature": 0.7,
+      "cost_per_1k_tokens": {
+        "input": 0.001,
+        "output": 0.002
+      }
+    }
+  },
+  "roles": {
+    "RESEARCH": {
+      "primary_model": "perplexity_research",
+      "fallback_model": "glm46",
+      "description": "Web research with citations and current data"
+    },
+    "REASONING": {
+      "primary_model": "glm46",
+      "fallback_model": "deepseek_r1",
+      "description": "Complex comparisons and logical analysis"
+    },
+    "DRAFTING": {
+      "primary_model": "glm46",
+      "fallback_model": "deepseek_r1",
+      "description": "Long-form article writing (cost-optimized)"
+    },
+    "COMPLIANCE": {
+      "primary_model": "claude_sonnet",
+      "fallback_model": "gpt4_turbo",
+      "description": "ASQA/AQF compliance checking and analysis"
+    },
+    "CONTENT_ANALYSIS": {
+      "primary_model": "gpt4_turbo",
+      "fallback_model": "claude_sonnet",
+      "description": "Web content understanding and structure analysis"
+    },
+    "REPORT_GENERATION": {
+      "primary_model": "claude_sonnet",
+      "fallback_model": "gpt4_turbo",
+      "description": "Compliance report writing and formatting"
+    },
+    "SUMMARIZATION": {
+      "primary_model": "deepseek_r1",
+      "fallback_model": "glm46",
+      "description": "Quick compliance summaries and overviews"
+    },
+    "EDITING": {
+      "primary_model": "glm46",
+      "fallback_model": "claude_sonnet",
+      "description": "Australian English editing and refinement"
+    },
+    "SEO_META": {
+      "primary_model": "glm46",
+      "fallback_model": "deepseek_r1",
+      "description": "SEO metadata generation"
+    },
+    "IMAGERY": {
+      "primary_model": "dalle3",
+      "fallback_model": null,
+      "description": "Featured image generation"
+    }
+  },
+  "retry_config": {
+    "max_retries": 3,
+    "initial_delay_ms": 1000,
+    "backoff_multiplier": 2,
+    "max_delay_ms": 10000
+  },
+  "version": "1.1.0",
+  "last_synced": "2025-11-10"
+}

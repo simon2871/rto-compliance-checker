@@ -1,0 +1,52 @@
+{
+  "name": "rto-compliance-checker",
+  "version": "1.0.0",
+  "description": "AI-powered RTO compliance checker for ASQA/AQF regulatory requirements",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "echo 'Build process would go here'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "setup": "node scripts/setup/initialize-project.js",
+    "setup:ai": "node scripts/setup/test-ai-connections.js",
+    "scan": "node scripts/test/test-compliance-check.js",
+    "lint": "eslint src/ --ext .js",
+    "lint:fix": "eslint src/ --ext .js --fix"
+  },
+  "keywords": ["rto", "compliance", "asqa", "aqf", "education", "regulation", "ai"],
+  "author": "RTO Compliance Checker Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "express": "^5.1.0",
+    "jsdom": "^27.1.0",
+    "puppeteer": "^24.29.1",
+    "sharp": "^0.34.5",
+    "openai": "^4.71.1",
+    "@anthropic-ai/sdk": "^0.32.0",
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-lib": "^1.17.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "rate-limiter-flexible": "^5.0.3",
+    "uuid": "^10.0.0",
+    "winston": "^3.17.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.17.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

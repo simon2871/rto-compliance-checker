@@ -1,0 +1,74 @@
+{
+  "server": {
+    "port": 5000,
+    "host": "0.0.0.0",
+    "cors": {
+      "origin": "*",
+      "credentials": true
+    },
+    "helmet": {
+      "contentSecurityPolicy": {
+        "directives": {
+          "defaultSrc": ["'self'"],
+          "styleSrc": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          "fontSrc": ["'self'", "https://fonts.gstatic.com"],
+          "imgSrc": ["'self'", "data:", "https:"],
+          "scriptSrc": ["'self'"],
+          "connectSrc": ["'self'"]
+        }
+      }
+    }
+  },
+  "rateLimiting": {
+    "windowMs": 60000,
+    "maxRequests": 20,
+    "message": "Too many requests from this IP, please try again later."
+  },
+  "webScraping": {
+    "timeout": 30000,
+    "maxRedirects": 5,
+    "userAgent": "RTO-Compliance-Checker/1.0 (Educational Purpose)",
+    "concurrentLimit": 5,
+    "respectRobotsTxt": true,
+    "requestDelay": 1000
+  },
+  "compliance": {
+    "threshold": 95,
+    "enableAI": true,
+    "cacheResults": true,
+    "cacheTTL": 3600
+  },
+  "reports": {
+    "outputDir": "./data/scans",
+    "formats": ["pdf", "html", "json"],
+    "templateDir": "./src/reports/templates",
+    "maxRetainDays": 30
+  },
+  "logging": {
+    "level": "info",
+    "format": "combined",
+    "file": {
+      "enabled": true,
+      "filename": "./logs/app.log",
+      "maxsize": 10485760,
+      "maxFiles": 5
+    },
+    "console": {
+      "enabled": true,
+      "colorize": true
+    }
+  },
+  "features": {
+    "batchScanning": true,
+    "reportGeneration": true,
+    "aiAnalysis": true,
+    "userAccounts": false,
+    "apiAuthentication": false
+  },
+  "security": {
+    "enableHelmet": true,
+    "enableCORS": true,
+    "trustProxy": false,
+    "sessionSecret": "your-session-secret-here"
+  }
+}

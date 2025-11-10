@@ -1,0 +1,144 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-11-04T07:42:45Z",
+  "forbidden_patterns": [
+    {
+      "id": "ft_001",
+      "category": "employment_guarantees",
+      "patterns": [
+        "guaranteed job",
+        "guaranteed employment",
+        "you will be hired",
+        "guaranteed placement",
+        "job guarantee",
+        "guaranteed to find a job",
+        "secured employment",
+        "assured job",
+        "100% job placement"
+      ],
+      "severity": "critical",
+      "reason": "ASQA violation - employment claims"
+    },
+    {
+      "id": "ft_002",
+      "category": "salary_promises",
+      "patterns": [
+        "earn $",
+        "salary of",
+        "guaranteed earnings",
+        "income of",
+        "you will make",
+        "average salary",
+        "typical salary",
+        "starting salary",
+        "salary increase",
+        "earn per month"
+      ],
+      "severity": "critical",
+      "reason": "ASQA violation - salary claims",
+      "note": "Allow: 'competitive salaries', 'salary progression', 'earning potential'"
+    },
+    {
+      "id": "ft_003",
+      "category": "completion_guarantees",
+      "patterns": [
+        "complete in exactly",
+        "guaranteed completion",
+        "finish in",
+        "complete within",
+        "complete in just"
+      ],
+      "severity": "critical",
+      "reason": "ASQA violation - duration claims",
+      "note": "Allow: 'typical duration', 'average time', 'approximately'"
+    },
+    {
+      "id": "ft_004",
+      "category": "misleading_comparisons",
+      "patterns": [
+        "better than university",
+        "superior to degree",
+        "better than bachelor",
+        "more effective than university",
+        "preferred to university",
+        "alternative to university"
+      ],
+      "severity": "critical",
+      "reason": "ASQA violation - comparative claims"
+    },
+    {
+      "id": "ft_005",
+      "category": "terminology_errors",
+      "patterns": [
+        " course ",
+        " course.",
+        " courses",
+        "take a course",
+        "enrol in a course",
+        "complete a course"
+      ],
+      "severity": "high",
+      "reason": "Must use 'unit' not 'course'",
+      "replacement": "Use 'unit' instead of 'course'"
+    },
+    {
+      "id": "ft_006",
+      "category": "terminology_errors",
+      "patterns": [
+        "pass or fail",
+        "pass the unit",
+        "fail the assessment",
+        "passing grade",
+        "failing grade"
+      ],
+      "severity": "high",
+      "reason": "Must use 'competent/not yet competent'",
+      "replacement": "Use 'competent' or 'not yet competent' instead"
+    },
+    {
+      "id": "ft_007",
+      "category": "terminology_errors",
+      "patterns": [
+        "Level 3",
+        "Level 4",
+        "Level 5",
+        "Level 6"
+      ],
+      "severity": "high",
+      "reason": "Use proper AQF level names",
+      "replacement": "Use 'Certificate III', 'Certificate IV', 'Diploma', etc."
+    }
+  ],
+  "allowed_expressions": [
+    {
+      "phrase": "competitive salaries",
+      "category": "salary_related",
+      "reason": "General statement, not a specific claim"
+    },
+    {
+      "phrase": "career progression",
+      "category": "career_related",
+      "reason": "Describes potential, not guarantee"
+    },
+    {
+      "phrase": "earning potential",
+      "category": "salary_related",
+      "reason": "Describes possibility, not guarantee"
+    },
+    {
+      "phrase": "typical duration",
+      "category": "timing",
+      "reason": "Indicates average, not guarantee"
+    },
+    {
+      "phrase": "approximately",
+      "category": "timing",
+      "reason": "Indicates estimate, not guarantee"
+    },
+    {
+      "phrase": "industry-relevant",
+      "category": "quality",
+      "reason": "Describes quality without comparison"
+    }
+  ]
+}

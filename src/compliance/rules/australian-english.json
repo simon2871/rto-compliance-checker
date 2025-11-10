@@ -1,0 +1,108 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-11-04T07:43:00Z",
+  "language": "en-AU",
+  "description": "Australian English spelling and grammar standards",
+  "spelling_rules": [
+    {
+      "us_form": "-ize",
+      "au_form": "-ise",
+      "examples": [
+        { "us": "organize", "au": "organise" },
+        { "us": "recognize", "au": "recognise" },
+        { "us": "summarize", "au": "summarise" },
+        { "us": "analyze", "au": "analyse" }
+      ]
+    },
+    {
+      "us_form": "-or",
+      "au_form": "-our",
+      "examples": [
+        { "us": "color", "au": "colour" },
+        { "us": "behavior", "au": "behaviour" },
+        { "us": "favor", "au": "favour" },
+        { "us": "labor", "au": "labour" }
+      ]
+    },
+    {
+      "us_form": "-er",
+      "au_form": "-re",
+      "examples": [
+        { "us": "center", "au": "centre" },
+        { "us": "meter", "au": "metre" },
+        { "us": "fiber", "au": "fibre" }
+      ]
+    },
+    {
+      "us_form": "-ense",
+      "au_form": "-ence",
+      "examples": [
+        { "us": "defense", "au": "defence" },
+        { "us": "offense", "au": "offence" },
+        { "us": "license", "au": "licence" }
+      ]
+    },
+    {
+      "us_form": "-og",
+      "au_form": "-ogue",
+      "examples": [
+        { "us": "dialog", "au": "dialogue" },
+        { "us": "catalog", "au": "catalogue" }
+      ]
+    }
+  ],
+  "vocabulary_differences": [
+    {
+      "us_term": "fall",
+      "au_term": "autumn",
+      "context": "Season of the year"
+    },
+    {
+      "us_term": "elevator",
+      "au_term": "lift",
+      "context": "Building equipment"
+    },
+    {
+      "us_term": "truck",
+      "au_term": "ute/truck",
+      "context": "Vehicle",
+      "note": "Use context-appropriately"
+    },
+    {
+      "us_term": "cell phone",
+      "au_term": "mobile phone",
+      "context": "Phone device"
+    }
+  ],
+  "grammar_preferences": [
+    {
+      "rule": "Collective nouns take plural verb",
+      "example_correct": "The team are working on the project",
+      "example_incorrect": "The team is working on the project"
+    },
+    {
+      "rule": "Use 'whilst' and 'among' instead of 'while' and 'amongst'",
+      "example_correct": "Whilst the project develops, we'll monitor progress",
+      "example_incorrect": "While the project develops, we'll monitor progress"
+    }
+  ],
+  "common_mistakes": [
+    {
+      "mistake": "Using 'got' instead of 'have'",
+      "incorrect": "I got the information from the manager",
+      "correct": "I have obtained the information from the manager"
+    },
+    {
+      "mistake": "Using 'proven' instead of 'proved'",
+      "incorrect": "The theory has been proven",
+      "correct": "The theory has been proved"
+    }
+  ],
+  "validation_notes": [
+    "All content must be checked with LanguageTool API using language: 'en-AU'",
+    "Manual review for Australian business terminology",
+    "Check industry-specific terms used in Australian context",
+    "Ensure dates use DD/MM/YYYY format",
+    "Use metric units throughout"
+  ]
+}

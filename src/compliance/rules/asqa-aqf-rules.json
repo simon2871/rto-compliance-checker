@@ -1,0 +1,145 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-11-04T07:42:30Z",
+  "standards": "ASQA/AQF 2025",
+  "rto_info": {
+    "rto_number": 90768,
+    "rto_name": "Edmund Barton College"
+  },
+  "critical_rules": [
+    {
+      "id": "cr_001",
+      "category": "Terminology",
+      "rule": "Always use 'unit' not 'course' when referring to competency units",
+      "examples_correct": ["This unit covers critical thinking", "Enrol in unit BSBCRT411"],
+      "examples_incorrect": ["This course covers critical thinking", "Enrol in course BSBCRT411"],
+      "severity": "critical",
+      "reference": "ASQA Standards 2025 - Terminology Requirements"
+    },
+    {
+      "id": "cr_002",
+      "category": "Terminology",
+      "rule": "Include RTO number: 'Edmund Barton College (RTO 90768)' on first mention",
+      "examples_correct": ["Edmund Barton College (RTO 90768) offers nationally recognised qualifications"],
+      "examples_incorrect": ["Edmund Barton College offers nationally recognised qualifications"],
+      "severity": "critical",
+      "reference": "ASQA Standards 2025 - RTO Identification"
+    },
+    {
+      "id": "cr_003",
+      "category": "Terminology",
+      "rule": "Use correct AQF levels: 'Certificate III' not 'Level 3', 'Diploma' not 'Level 5'",
+      "examples_correct": ["Certificate III in Business", "Diploma of Leadership and Management"],
+      "examples_incorrect": ["Level 3 qualification", "Level 5 qualification"],
+      "severity": "critical",
+      "reference": "AQF Terminology - Official Level Names"
+    },
+    {
+      "id": "cr_004",
+      "category": "Terminology",
+      "rule": "Use 'competent/not yet competent' not 'pass/fail'",
+      "examples_correct": ["Students are assessed as competent or not yet competent"],
+      "examples_incorrect": ["Students pass or fail the assessment"],
+      "severity": "critical",
+      "reference": "AQF Competency-Based Training Standards"
+    },
+    {
+      "id": "cr_005",
+      "category": "Forbidden Claims",
+      "rule": "NO employment guarantees - FORBIDDEN: 'guaranteed job', 'guaranteed employment', 'you will be hired'",
+      "examples_correct": ["This qualification supports career progression in business"],
+      "examples_incorrect": ["Complete this course and get a guaranteed job"],
+      "severity": "critical",
+      "impact": "ASQA violation - regulatory action",
+      "reference": "ASQA Marketing Standards - Employment Claims"
+    },
+    {
+      "id": "cr_006",
+      "category": "Forbidden Claims",
+      "rule": "NO salary promises - FORBIDDEN: 'you will earn $X', 'average salary of...', 'salary increase guaranteed'",
+      "examples_correct": ["Graduates often pursue roles in management with competitive salaries"],
+      "examples_incorrect": ["Complete this qualification and earn $80,000 per year"],
+      "severity": "critical",
+      "impact": "ASQA violation - regulatory action",
+      "reference": "ASQA Marketing Standards - Salary Claims"
+    },
+    {
+      "id": "cr_007",
+      "category": "Forbidden Claims",
+      "rule": "NO completion time guarantees - FORBIDDEN: 'complete in exactly X months', 'guaranteed completion in X weeks'",
+      "examples_correct": ["Typical duration: 26 weeks full-time or equivalent part-time"],
+      "examples_incorrect": ["Complete in exactly 26 weeks guaranteed"],
+      "severity": "critical",
+      "impact": "ASQA violation - regulatory action",
+      "reference": "ASQA Marketing Standards - Duration Claims"
+    },
+    {
+      "id": "cr_008",
+      "category": "Forbidden Claims",
+      "rule": "NO misleading comparisons - FORBIDDEN: 'better than university', 'superior to...', 'more effective than degree'",
+      "examples_correct": ["VET qualifications provide practical, industry-focused training"],
+      "examples_incorrect": ["This diploma is better than a university degree"],
+      "severity": "critical",
+      "impact": "ASQA violation - regulatory action",
+      "reference": "ASQA Marketing Standards - Comparative Claims"
+    }
+  ],
+  "required_statements": [
+    {
+      "id": "req_001",
+      "category": "RPL/Credit Transfer",
+      "statement": "Recognition of Prior Learning (RPL) and Credit Transfer may be available",
+      "placement": "Before enrolment or in FAQs",
+      "severity": "required"
+    },
+    {
+      "id": "req_002",
+      "category": "Completion Timeframe",
+      "statement": "Completion timeframes vary based on individual circumstances, prior learning, and study load",
+      "placement": "Near duration information",
+      "severity": "required"
+    },
+    {
+      "id": "req_003",
+      "category": "National Recognition",
+      "statement": "This qualification is nationally recognised throughout Australia and is valid for life",
+      "placement": "In qualification overview",
+      "severity": "required"
+    },
+    {
+      "id": "req_004",
+      "category": "Support",
+      "statement": "Support services are available including [career guidance, study support, etc]",
+      "placement": "In course details",
+      "severity": "recommended"
+    }
+  ],
+  "quality_standards": [
+    {
+      "id": "qs_001",
+      "standard": "Content must reflect current industry practice and workplace relevance",
+      "check_method": "Content review against unit descriptor"
+    },
+    {
+      "id": "qs_002",
+      "standard": "Content must be inclusive and respectful of diverse learners",
+      "check_method": "Tone and language review"
+    },
+    {
+      "id": "qs_003",
+      "standard": "Content must avoid stereotypes and biased language",
+      "check_method": "Language bias review"
+    },
+    {
+      "id": "qs_004",
+      "standard": "Content must be factually accurate and evidence-based",
+      "check_method": "Fact-checking against reliable sources"
+    }
+  ],
+  "compliance_thresholds": {
+    "critical_violations_allowed": 0,
+    "forbidden_terms_found": 0,
+    "min_required_statements": 3,
+    "min_compliance_score": 95
+  }
+}

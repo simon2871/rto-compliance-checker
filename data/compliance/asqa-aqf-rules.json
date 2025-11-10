@@ -1,0 +1,274 @@
+{
+  "rules": {
+    "critical_violations": [
+      {
+        "id": "cr_001",
+        "name": "employment_guarantees",
+        "category": "forbidden_claims",
+        "severity": "critical",
+        "description": "No employment guarantees or promises of specific jobs",
+        "pattern": "\\b(guaranteed job|you will be hired|employment guarantee|job placement guaranteed|get a job after|guaranteed employment|secure employment|job guarantee)\\b",
+        "examples": {
+          "compliant": "This qualification supports career development and enhances employment prospects",
+          "non_compliant": "Get a guaranteed job after completion"
+        },
+        "asqa_reference": "Standard 4.1 - Marketing and advertising"
+      },
+      {
+        "id": "cr_002",
+        "name": "salary_promises",
+        "category": "forbidden_claims",
+        "severity": "critical",
+        "description": "No specific salary promises or earnings guarantees",
+        "pattern": "\\b(you will earn|average salary of|starting salary|earn \\$|salary of \\$|guaranteed income|expected earnings)\\b",
+        "examples": {
+          "compliant": "Graduates may seek employment in various IT roles with competitive salaries",
+          "non_compliant": "You will earn $80,000 after completion"
+        },
+        "asqa_reference": "Standard 4.1 - Marketing and advertising"
+      },
+      {
+        "id": "cr_003",
+        "name": "completion_time_guarantees",
+        "category": "forbidden_claims",
+        "severity": "critical",
+        "description": "No exact completion time guarantees",
+        "pattern": "\\b(complete in exactly|finish in exactly|guaranteed completion|will complete in|exact duration|fixed timeframe)\\b",
+        "examples": {
+          "compliant": "Most students complete this qualification within 12 months",
+          "non_compliant": "Complete in exactly 6 months"
+        },
+        "asqa_reference": "Standard 4.1 - Marketing and advertising"
+      },
+      {
+        "id": "cr_004",
+        "name": "misleading_comparisons",
+        "category": "forbidden_claims",
+        "severity": "critical",
+        "description": "No misleading comparisons with other providers",
+        "pattern": "\\b(better than university|superior to|best provider|number one college|top ranked|unlike other providers)\\b",
+        "examples": {
+          "compliant": "Our college provides quality vocational education",
+          "non_compliant": "Better than university education"
+        },
+        "asqa_reference": "Standard 4.1 - Marketing and advertising"
+      },
+      {
+        "id": "cr_005",
+        "name": "rto_identification_missing",
+        "category": "required_information",
+        "severity": "critical",
+        "description": "RTO number must be clearly displayed",
+        "pattern": "\\(RTO\\s*\\d{5}\\)",
+        "required": true,
+        "examples": {
+          "compliant": "Edmund Barton College (RTO 90768)",
+          "non_compliant": "Edmund Barton College"
+        },
+        "asqa_reference": "Standard 7.1 - Provider information"
+      }
+    ],
+    "required_terminology": [
+      {
+        "id": "rt_001",
+        "name": "unit_vs_course",
+        "category": "terminology",
+        "severity": "warning",
+        "description": "Use 'unit of competency' not 'course' when referring to unit codes",
+        "pattern": "\\b(course\\s+[A-Z]{3}\\d{3})\\b",
+        "correction": "Use 'unit [code]' instead of 'course [code]'",
+        "examples": {
+          "compliant": "Unit BSBMKG421 - Search and assess presentation opportunities",
+          "non_compliant": "Course BSBMKG421 - Search and assess presentation opportunities"
+        },
+        "asqa_reference": "AQF terminology guidelines"
+      },
+      {
+        "id": "rt_002",
+        "name": "competent_not_pass",
+        "category": "terminology",
+        "severity": "warning",
+        "description": "Use 'competent/not yet competent' not 'pass/fail'",
+        "pattern": "\\b(pass|fail|passed|failed)\\b",
+        "correction": "Use 'competent' or 'not yet competent'",
+        "examples": {
+          "compliant": "Students are assessed as competent or not yet competent",
+          "non_compliant": "You must pass all assessments"
+        },
+        "asqa_reference": "AQF assessment terminology"
+      },
+      {
+        "id": "rt_003",
+        "name": "aqf_level_format",
+        "category": "terminology",
+        "severity": "warning",
+        "description": "Use correct AQF level terminology",
+        "pattern": "\\b(level\\s+\\d+|Certificate\\s+I|Diploma\\s+I|Advanced\\s+Diploma)\\b",
+        "correction": "Use proper AQF terminology (Certificate I, Certificate II, etc.)",
+        "examples": {
+          "compliant": "Certificate III in Early Childhood Education and Care",
+          "non_compliant": "Level 3 qualification"
+        },
+        "asqa_reference": "AQF specifications"
+      }
+    ],
+    "required_disclaimers": [
+      {
+        "id": "rd_001",
+        "name": "rpl_availability",
+        "category": "disclaimers",
+        "severity": "warning",
+        "description": "RPL availability must be mentioned",
+        "pattern": "\\b(RPL|recognition of prior learning|credit transfer)\\b",
+        "required": true,
+        "examples": {
+          "compliant": "RPL and credit transfer are available for this qualification",
+          "non_compliant": "No mention of RPL options"
+        },
+        "asqa_reference": "Standard 1.12 - RPL and credit transfer"
+      },
+      {
+        "id": "rd_002",
+        "name": "nationally_recognised",
+        "category": "disclaimers",
+        "severity": "warning",
+        "description": "Nationally recognised training disclaimer",
+        "pattern": "\\b(nationally recognised|nationally accredited)\\b",
+        "required": true,
+        "examples": {
+          "compliant": "This is a nationally recognised qualification",
+          "non_compliant": "No mention of national recognition"
+        },
+        "asqa_reference": "Standard 1.1 - Training delivery"
+      }
+    ],
+    "web_specific_requirements": [
+      {
+        "id": "ws_001",
+        "name": "contact_information",
+        "category": "web_content",
+        "severity": "warning",
+        "description": "Contact information must be visible",
+        "pattern": "\\b(phone|email|contact|address|\\d{2,3}\\s*\\d{3,4}\\s*\\d{3,4}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})\\b",
+        "required": true,
+        "location": "visible",
+        "examples": {
+          "compliant": "Contact us at (02) 1234 5678 or info@college.edu.au",
+          "non_compliant": "No contact information visible"
+        },
+        "asqa_reference": "Standard 7.1 - Provider information"
+      },
+      {
+        "id": "ws_002",
+        "name": "privacy_policy",
+        "category": "web_content",
+        "severity": "warning",
+        "description": "Privacy policy link must be present",
+        "pattern": "\\b(privacy\\s*policy|privacy\\s*statement)\\b",
+        "required": true,
+        "location": "footer_or_navigation",
+        "examples": {
+          "compliant": "Privacy Policy link in footer",
+          "non_compliant": "No privacy policy link"
+        },
+        "asqa_reference": "Privacy Act requirements"
+      },
+      {
+        "id": "ws_003",
+        "name": "fee_disclosure",
+        "category": "web_content",
+        "severity": "warning",
+        "description": "Course fees must be disclosed",
+        "pattern": "\\b(fee|cost|price|\\$\\d+|tuition)\\b",
+        "required": true,
+        "examples": {
+          "compliant": "Course fee: $2,500 (includes all materials)",
+          "non_compliant": "No fee information provided"
+        },
+        "asqa_reference": "Standard 3.2 - Fees and charges"
+      },
+      {
+        "id": "ws_004",
+        "name": "refund_policy",
+        "category": "web_content",
+        "severity": "warning",
+        "description": "Refund policy must be accessible",
+        "pattern": "\\b(refund\\s*policy|refund\\s*information|cancellation\\s*policy)\\b",
+        "required": true,
+        "examples": {
+          "compliant": "View our refund policy here",
+          "non_compliant": "No refund policy accessible"
+        },
+        "asqa_reference": "Standard 3.2 - Fees and charges"
+      }
+    ],
+    "marketing_guidelines": [
+      {
+        "id": "mg_001",
+        "name": "accurate_claims",
+        "category": "marketing",
+        "severity": "moderate",
+        "description": "All marketing claims must be accurate and verifiable",
+        "pattern": "\\b(100%|always|never|everyone|all students)\\b",
+        "correction": "Use qualified statements with data",
+        "examples": {
+          "compliant": "95% of our graduates find employment within 6 months",
+          "non_compliant": "100% employment rate guaranteed"
+        },
+        "asqa_reference": "Standard 4.1 - Marketing and advertising"
+      },
+      {
+        "id": "mg_002",
+        "name": "testimonials_authenticity",
+        "category": "marketing",
+        "severity": "moderate",
+        "description": "Testimonials must be authentic and verifiable",
+        "pattern": "\\b(testimonial|review|what students say|success story)\\b",
+        "verification_required": true,
+        "examples": {
+          "compliant": "John Smith - Graduate 2023 - Verified testimonial",
+          "non_compliant": "Anonymous testimonial without verification"
+        },
+        "asqa_reference": "Standard 4.1 - Marketing and advertising"
+      }
+    ]
+  },
+  "compliance_thresholds": {
+    "overall_score": {
+      "excellent": 95,
+      "good": 85,
+      "acceptable": 75,
+      "needs_improvement": 60
+    },
+    "severity_weights": {
+      "critical": 25,
+      "moderate": 15,
+      "warning": 10,
+      "info": 5
+    },
+    "pass_threshold": 95,
+    "auto_fail_threshold": 70
+  },
+  "scoring": {
+    "base_score": 100,
+    "deductions": {
+      "critical_violation": 25,
+      "moderate_violation": 15,
+      "warning": 10,
+      "missing_required": 20
+    },
+    "bonus_points": {
+      "all_required_present": 5,
+      "best_practices": 3,
+      "clear_disclosure": 2
+    }
+  },
+  "metadata": {
+    "version": "2025.1",
+    "last_updated": "2025-01-15",
+    "asqa_standards_version": "2025",
+    "aqf_version": "4th Edition",
+    "review_date": "2025-07-01",
+    "maintained_by": "RTO Compliance Checker Team"
+  }
+}
