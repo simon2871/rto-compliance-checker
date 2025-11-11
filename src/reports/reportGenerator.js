@@ -1,10 +1,13 @@
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const fs = require('fs').promises;
 const path = require('path');
+const ModernPDFGenerator = require('./modernPDFGenerator');
 
 class ReportGenerator {
   constructor() {
     this.outputDir = path.join(__dirname, '../../data/scans');
+    this.modernPDFGenerator = new ModernPDFGenerator();
+    this.useModernPDF = process.env.USE_MODERN_PDF !== 'false'; // Default to true
     this.ensureOutputDir();
   }
 
@@ -17,7 +20,20 @@ class ReportGenerator {
   }
 
   async generatePDFReport(complianceResult) {
+    // Try modern PDF generator first if enabled
+    if (this.useModernPDF) {
+      try {
+        console.log('🎨 Generating modern PDF report...');
+        return await this.modernPDFGenerator.generatePDFReport(complianceResult);
+      } catch (error) {
+        console.warn('⚠️ Modern PDF generation failed, falling back to legacy:', error.message);
+        // Fall through to legacy PDF generation
+      }
+    }
+
+    // Legacy PDF generation
     try {
+      console.log('📄 Generating legacy PDF report...');
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage([595, 842]); // A4 size
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
