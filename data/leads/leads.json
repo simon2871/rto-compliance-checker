@@ -1,0 +1,16 @@
+[
+  {
+    "id": "lead_1762822386548",
+    "name": "Automated Test",
+    "email": "lead+test@example.com",
+    "website": "https://example-rto.edu.au",
+    "timestamp": "2025-11-11T00:53:06.548Z"
+  },
+  {
+    "id": "lead_1762822668982",
+    "name": "Simon",
+    "email": "simon@fullsteam.com.au",
+    "website": "https://www.edmundbartoncollege.edu.au/",
+    "timestamp": "2025-11-11T00:57:48.982Z"
+  }
+]

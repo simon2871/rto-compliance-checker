@@ -14,7 +14,7 @@ const { getRouter } = require('../ai/modelRouter');
 
 // Create Express app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(helmet({
@@ -379,6 +379,133 @@ app.post('/api/extract', rateLimit, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Content extraction failed',
+      message: error.message
+    });
+  }
+});
+
+// Lead capture endpoint
+// Required fields: name, email, website
+// On success: persist lead to data/leads/leads.json, POST webhook to LEAD_WEBHOOK_URL (if set),
+// and attempt to send an email notification if SMTP env vars are configured.
+app.post('/api/leads', rateLimit, async (req, res) => {
+  try {
+    const { name, email, website } = req.body;
+
+    if (!name || !email || !website) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required lead fields',
+        message: 'Please provide name, email and website'
+      });
+    }
+
+    if (!isValidUrl(website)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid website URL',
+        message: 'Website must be a valid http/https URL'
+      });
+    }
+
+    const lead = {
+      id: `lead_${Date.now()}`,
+      name,
+      email,
+      website,
+      timestamp: new Date().toISOString()
+    };
+
+    // Ensure leads directory exists and persist the lead
+    const leadsDir = path.join(__dirname, '../../data/leads');
+    const leadsFile = path.join(leadsDir, 'leads.json');
+    try {
+      await fs.promises.mkdir(leadsDir, { recursive: true });
+      let existing = [];
+      if (fs.existsSync(leadsFile)) {
+        const data = await fs.promises.readFile(leadsFile, 'utf8');
+        existing = JSON.parse(data || '[]');
+      }
+      existing.push(lead);
+      await fs.promises.writeFile(leadsFile, JSON.stringify(existing, null, 2), 'utf8');
+    } catch (ioError) {
+      console.warn('Failed to persist lead locally:', ioError.message);
+    }
+
+    // Send webhook if configured
+    const webhookUrl = process.env.LEAD_WEBHOOK_URL;
+    if (webhookUrl) {
+      try {
+        // Node 18+ has global fetch
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'new_lead', lead })
+        });
+      } catch (hookErr) {
+        console.warn('Failed to send lead webhook:', hookErr.message);
+      }
+    }
+
+    // Attempt to send notification email if SMTP config present
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const smtpPort = process.env.SMTP_PORT;
+    const fromEmail = process.env.FROM_EMAIL || process.env.SMTP_USER;
+    const notifyEmail = process.env.LEAD_NOTIFY_EMAIL || fromEmail;
+
+    if (smtpHost && smtpUser && smtpPass && notifyEmail) {
+      try {
+        // Try to require nodemailer only if SMTP is configured
+        let nodemailer;
+        try {
+          nodemailer = require('nodemailer');
+        } catch (importErr) {
+          console.warn('nodemailer not installed; skipping email send');
+        }
+
+        if (nodemailer) {
+          const transporter = nodemailer.createTransport({
+            host: smtpHost,
+            port: Number(smtpPort) || 587,
+            secure: Number(smtpPort) === 465, // true for 465, false for other ports
+            auth: {
+              user: smtpUser,
+              pass: smtpPass
+            }
+          });
+
+          const mailOptions = {
+            from: fromEmail,
+            to: notifyEmail,
+            subject: `New lead captured: ${lead.name}`,
+            text: `A new lead was captured:\n\nName: ${lead.name}\nEmail: ${lead.email}\nWebsite: ${lead.website}\nTimestamp: ${lead.timestamp}\n\n-- RTO Compliance Checker`
+          };
+
+          await transporter.sendMail(mailOptions);
+        }
+      } catch (mailErr) {
+        console.warn('Failed to send lead notification email:', mailErr.message);
+      }
+    } else {
+      console.info('SMTP or notify email not configured; skipping email send');
+    }
+
+    // Return success (do not expose internal failures)
+    res.json({
+      success: true,
+      data: {
+        lead_id: lead.id,
+        timestamp: lead.timestamp
+      },
+      message: 'Lead captured successfully'
+    });
+  } catch (error) {
+    console.error('Lead capture error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lead capture failed',
       message: error.message
     });
   }
